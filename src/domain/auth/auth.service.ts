@@ -10,7 +10,7 @@ export class AuthService {
   async validateUser(params: AuthRequestDTO): Promise<any> {
     const user = await this.usersService.findOne(params);
     if (user && user.password === params.password) {
-      const { password, ...result } = params;
+      const { password, ...result } = user;
       return result;
     }
     return null;
