@@ -1,11 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards } from '@nestjs/common';
 
 import { LocalAuthGuard } from '#/domain/guards/local-auth.guard';
 
 import { AuthRequestDTO } from './dto/request.dto';
 import { AuthResponseDTO } from './dto/response.dto';
 import { AuthService } from './auth.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { responseSchema } from '#/shared/utils/response';
 
 @ApiTags('Auth')
@@ -18,6 +18,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Auth to acess api',
   })
+  @ApiBody({ type: AuthRequestDTO })
   @ApiResponse({
     schema: responseSchema('obj', AuthResponseDTO),
     status: 200,
@@ -25,7 +26,7 @@ export class AuthController {
   @ApiResponse({
     schema: responseSchema('error'),
   })
-  async login(@Body() params: AuthRequestDTO): Promise<AuthResponseDTO> {
-    return this.authService.login(params);
+  async login(@Request() req): Promise<AuthResponseDTO> {
+    return this.authService.login(req.user);
   }
 }
